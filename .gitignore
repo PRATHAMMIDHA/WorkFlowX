@@ -1,0 +1,41 @@
+# Operating System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE & Editor Files
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+*.swp
+*.swo
+
+# Backend - Java & Maven
+workflowx-backend/target/
+workflowx-backend/*.log
+workflowx-backend/app.log
+workflowx-backend/.mvn/wrapper/maven-wrapper.jar
+*.class
+*.jar
+*.war
+*.ear
+
+# Frontend - Node & Vite
+workflowx-frontend/node_modules/
+workflowx-frontend/dist/
+workflowx-frontend/dist-ssr/
+workflowx-frontend/*.local
+workflowx-frontend/.env
+workflowx-frontend/.env.*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Temporary files & Logs
+logs/
+*.log
+.temp/
+.cache/

@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!--
+        spring-boot-starter-parent acts as the parent POM.
+        It manages all Spring Boot dependency versions so we don't have to
+        specify versions for each Spring dependency manually.
+        It also configures Maven plugins (compiler, surefire, etc.)
+    -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.3.4</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.workflowx</groupId>
+    <artifactId>workflowx-backend</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>workflowx-backend</name>
+    <description>WorkFlowX — Enterprise Project and Collaboration Platform</description>
+    <packaging>jar</packaging>
+
+    <properties>
+        <!-- Java 21 LTS — current long-term support release -->
+        <java.version>21</java.version>
+    </properties>
+
+    <dependencies>
+
+        <!-- ============================================================
+             CORE WEB
+             spring-boot-starter-web includes:
+               - Spring MVC (DispatcherServlet, controllers, REST support)
+               - Embedded Tomcat server (no separate server installation needed)
+               - Jackson (JSON serialization/deserialization)
+               - Default error handling
+        ============================================================ -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- ============================================================
+             DATABASE — JPA + HIBERNATE
+             spring-boot-starter-data-jpa includes:
+               - Spring Data JPA (repositories, query methods)
+               - Hibernate (JPA implementation — ORM)
+               - Spring JDBC / Transactions
+        ============================================================ -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <!-- MySQL JDBC driver — connects Hibernate to MySQL 8 -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- ============================================================
+             VALIDATION
+             Provides @Valid, @NotBlank, @Email, @Size, etc.
+             Uses Hibernate Validator as the implementation.
+             Applied on DTOs to validate incoming request bodies.
+        ============================================================ -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- ============================================================
+             LOMBOK
+             Compile-time annotation processor that generates:
+               - @Getter / @Setter
+               - @Builder
+               - @RequiredArgsConstructor / @AllArgsConstructor / @NoArgsConstructor
+               - @ToString / @EqualsAndHashCode
+               - @Slf4j (logging)
+             Reduces boilerplate significantly.
+             optional=true means it is NOT transitively passed to dependents.
+        ============================================================ -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- ============================================================
+             DEV TOOLS
+             Provides:
+               - Automatic restart on classpath changes (saves restarting manually)
+               - LiveReload support
+             Disabled automatically in production.
+        ============================================================ -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- ============================================================
+             SPRING SECURITY
+             Provides authentication/authorization infrastructure.
+             We will configure it to be stateless (JWT-based).
+        ============================================================ -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- ============================================================
+             JWT (JSON Web Tokens) — JJWT 0.12.x
+             Three artifacts required:
+               jjwt-api     → compile-time interfaces
+               jjwt-impl    → runtime implementation (loaded via SPI)
+               jjwt-jackson → Jackson-based JSON deserialization
+        ============================================================ -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.12.6</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.12.6</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>0.12.6</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- ============================================================
+             TESTING
+             spring-boot-starter-test includes:
+               - JUnit 5
+               - Mockito
+               - AssertJ
+               - MockMvc (for controller tests)
+               - Spring Test (context loading, integration tests)
+        ============================================================ -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!--
+                spring-boot-maven-plugin packages the app as a fat/uber JAR.
+                A fat JAR contains:
+                  - Your compiled classes
+                  - All dependency JARs (including embedded Tomcat)
+                So you can run it with: java -jar workflowx-backend.jar
+                The excludes block removes Lombok from the final JAR
+                (it's only needed at compile time).
+            -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

@@ -1,0 +1,54 @@
+# ============================================================
+# WorkFlowX Backend — .gitignore
+# ============================================================
+
+# ── MAVEN ──────────────────────────────────────────────────
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# ── ENVIRONMENT / SECRETS ──────────────────────────────────
+# CRITICAL: Never commit local credentials to git
+application-local.yml
+application-local.yaml
+*.env
+.env
+.env.local
+.env.production
+
+# ── IDE ────────────────────────────────────────────────────
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# ── OS ─────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── LOGS ───────────────────────────────────────────────────
+logs/
+*.log
+*.log.*
+
+# ── COMPILED ───────────────────────────────────────────────
+*.class
+*.jar
+*.war
+
+# ── TEMP ───────────────────────────────────────────────────
+tmp/
+temp/

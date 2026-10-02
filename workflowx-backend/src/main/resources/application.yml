@@ -1,0 +1,95 @@
+# ============================================================
+# application.yml — Main configuration file
+#
+# This file contains NON-SENSITIVE defaults.
+# Sensitive values (DB password, JWT secret) live in
+# application-local.yml which is git-ignored.
+#
+# Spring Boot merges both files at startup.
+# Active profile is set via SPRING_PROFILES_ACTIVE env variable.
+# ============================================================
+
+spring:
+  application:
+    name: WorkFlowX
+
+  # ──────────────────────────────────────────────────
+  # DATASOURCE — MySQL 8 connection pool (HikariCP)
+  # HikariCP is the default and fastest connection pool
+  # bundled with Spring Boot.
+  # ──────────────────────────────────────────────────
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # These placeholders are overridden in application-local.yml
+    url: ${DB_URL:jdbc:mysql://localhost:3306/workflowx_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
+
+  # ──────────────────────────────────────────────────
+  # JPA / HIBERNATE
+  # ──────────────────────────────────────────────────
+  jpa:
+    hibernate:
+      # validate  → checks schema matches entities, does NOT modify DB (use in production)
+      # update    → adds missing columns/tables (use in development)
+      # create    → drops and recreates everything on startup
+      # none      → do nothing (use when using Flyway/Liquibase)
+      #
+      # We use 'update' during development for convenience.
+      # Phase 22 will revisit this.
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    # Open-in-view sends a warning about lazy loading across HTTP requests.
+    # Disabling it is better practice — we'll handle DTO projection explicitly.
+    open-in-view: false
+
+  # ──────────────────────────────────────────────────
+  # DEVTOOLS — auto-restart config
+  # ──────────────────────────────────────────────────
+  devtools:
+    restart:
+      enabled: true
+
+# ──────────────────────────────────────────────────
+# SERVER
+# ──────────────────────────────────────────────────
+server:
+  port: 8080
+  servlet:
+    context-path: /    # All endpoints accessible from root
+  error:
+    # Disable Spring's default /error white-label page.
+    # Our GlobalExceptionHandler handles all errors instead.
+    include-message: never
+    include-binding-errors: never
+    include-stacktrace: never
+    include-exception: false
+
+# ──────────────────────────────────────────────────
+# LOGGING
+# ──────────────────────────────────────────────────
+logging:
+  level:
+    com.workflowx: DEBUG
+    org.springframework.web: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+# ──────────────────────────────────────────────────
+# CUSTOM APPLICATION PROPERTIES
+# JWT and other app-level config will be added in Phase 3.
+# ──────────────────────────────────────────────────
+application:
+  name: WorkFlowX
+  version: 1.0.0
+  jwt:
+    # Base64-encoded HS512 secret (must be >= 512 bits for HS512)
+    # NEVER commit real secret to git — override in application-local.yml
+    secret: d29ya2Zsb3d4U3VwZXJTZWNyZXRKd3RLZXkyMDI2V29ya0Zsb3dYQXBwbGljYXRpb25Qcm9kdWN0aW9uU2VjdXJlS2V5
+    expiration: 86400000          # 24 hours in milliseconds
+    refresh-expiration: 604800000 # 7 days in milliseconds
+  cors:
+    allowed-origins: "http://localhost:5173,http://localhost:3000"
